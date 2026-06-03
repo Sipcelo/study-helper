@@ -1,0 +1,14 @@
+
+> web@0.1.0 dev D:\monetizando\study-helper\apps\web
+> next dev
+
+ ⚠ Attempted to load @next/swc-win32-x64-msvc, but an error occurred: A dynamic link library (DLL) initialization routine failed.
+\\?\D:\monetizando\study-helper\node_modules\.pnpm\@next+swc-win32-x64-msvc@15.5.18\node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node
+ ⚠ Port 3000 is in use by process 13584, using available port 3001 instead.
+ ⚠ Attempted to load @next/swc-win32-x64-msvc, but an error occurred: A dynamic link library (DLL) initialization routine failed.
+\\?\D:\monetizando\study-helper\node_modules\.pnpm\@next+swc-win32-x64-msvc@15.5.18\node_modules\@next\swc-win32-x64-msvc\next-swc.win32-x64-msvc.node
+   ▲ Next.js 15.5.18
+   - Local:        http://localhost:3001
+   - Network:      http://192.168.8.149:3001
+
+ ✓ Starting...

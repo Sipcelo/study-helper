@@ -1,0 +1,7 @@
+   ▲ Next.js 15.5.18
+   - Local:        http://localhost:3002
+   - Network:      http://192.168.8.149:3002
+
+ ✓ Starting...
+[Error: > Couldn't find any `pages` or `app` directory. Please create one under the project root]
+[?25h

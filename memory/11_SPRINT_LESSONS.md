@@ -4,7 +4,16 @@
 
 | Sprint | Licao | Concluida em | Resumo |
 |--------|-------|--------------|--------|
-| — | — | — | (nenhuma licao registrada ainda) |
+| 25 | `memory/sprint_25_lesson.md` | NAO (parcial) | Voz no Interact: hook e CORS 8888 faltam |
+| 26 | `memory/sprint_26_lesson.md` | NAO (parcial com divergencia) | Actions UX: front nao renderiza 3 das 5 actions do back |
+| 27 | `memory/sprint_27_lesson.md` | NAO | Interact history: hook, componente e chave nao existem |
+| 28 | `memory/sprint_28_lesson.md` | NAO | Interact → Planner: contexto em sessionStorage nao existe |
+| 29 | `memory/sprint_29_lesson.md` | PARCIAL | Preview UX: engine rica, falta badge "origem Interact" |
+| 30 | `memory/sprint_30_lesson.md` | SIM | Save/continue: saveGeneratedPlan + generated-plan-shell completos |
+| 31 | `memory/sprint_31_lesson.md` | PARCIAL | Progress UX: hook completo, integracao precisa validar |
+
+Auditoria completa: `docs/recovery-audit-sprints25-31.md`
+Mapa mental: `docs/sprints25-31-mindmap.md`
 
 ## Template de licao
 

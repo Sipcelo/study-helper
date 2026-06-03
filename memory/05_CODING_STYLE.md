@@ -14,16 +14,16 @@
 
 ## Java (Spring Boot)
 
-- Java 21 LTS (verificar versao no `pom.xml`)
-- Spring Boot 3.x
+- Java 17 (confirmado no `pom.xml`)
+- Spring Boot 3.3.4 (confirmado)
 - Pacote base por servico:
   - `com.studyhelper.api` para `services/study-helper-api/`
   - `com.studyhelper.interact` para `services/api-interact/`
-- Records para DTOs
-- Lombok (provavelmente sim, comum no bootcamp — TUDO)
-- JPA com repositories, nao DAO manual
-- Migrations com Flyway (TUDO)
-- Testes: JUnit 5 + Mockito + Testcontainers para integracao
+- Records para DTOs (em uso)
+- Lombok: NAO esta em uso
+- JPA: NAO esta em uso (servico in-memory)
+- Flyway: NAO esta em uso (sem DB)
+- Testes: JUnit 5 + Mockito (4 classes, 363 linhas)
 
 ## Provider Pattern (front)
 

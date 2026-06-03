@@ -7,7 +7,7 @@
 - **Modulo programacao** — proxima vertical, foco a partir da sprint 11
 - **Modulo carreira** — terceira vertical, planejada para fase 6
 - **Interact** — servico de voz/texto educacional (sprint final do bootcamp)
-- **API Interact** — backend Java do Interact, em `services/api-interact/`
+- **API Interact** — backend Java do Interact, em `services/study-helper-api/` (unico servico Java existente)
 - **Study Planner** — gerador de plano de estudos a partir de formulario ou voz
 - **Cerebro** — pasta `memory/`, base de conhecimento do agente pessoal
 
@@ -39,26 +39,51 @@
 
 ## Intencoes do Interact
 
+**Front** (`apps/web/src/types/interact.ts`):
+- `EXPLAIN_CONCEPT` — explicar conceito
+- `QUIZ_ME` — quiz
+- `NAVIGATE_TO` — navegar
+- `SEARCH_TOPIC` — buscar topico
+- `UNKNOWN` — desconhecido
+
+**Back** (`services/study-helper-api/src/main/java/com/studyhelper/api/domain/Intent.java`):
 - `EXPLAIN_CONCEPT` — explicar conceito
 - `GENERATE_STUDY_PLAN` — gerar plano de estudo
 - `SIMULATE_INTERVIEW` — simular entrevista
-- `REVIEW_ANSWER` — revisar resposta do usuario
+- `REVIEW_ANSWER` — revisar resposta
 - `OPEN_RESOURCE` — abrir recurso
 - `COMPARE_CONCEPTS` — comparar conceitos
+- `UNKNOWN` — desconhecido
 
-## Actions do Interact (Sprint 26)
+**DIVERGENCIA FRONT/BACK**: apenas `EXPLAIN_CONCEPT` e `UNKNOWN` coincidem.
 
-- `SHOW_EXPLANATION` — abrir explicacao
-- `START_STUDY_PLAN` — planejar estudos
-- `START_INTERVIEW` — iniciar simulacao
+## Acoes do Interact
+
+**Front** (`apps/web/src/types/interact.ts`):
+- `OPEN_RESOURCE` — abrir recurso (renderizado como link)
+- `SHOW_QUIZ` — mostrar quiz
+- `SEARCH` — busca
+- `NONE` — sem acao
+
+**Back** (`services/study-helper-api/src/main/java/com/studyhelper/api/domain/ActionType.java`):
 - `OPEN_RESOURCE` — abrir recurso
-- `UNKNOWN` — action desconhecida (fallback seguro)
+- `SHOW_EXPLANATION` — exibir explicacao
+- `START_STUDY_PLAN` — ir para `/planejar-estudos`
+- `START_INTERVIEW` — ir para `/programacao/entrevista-java-junior`
+- `NONE` — sem acao
+
+**DIVERGENCIA FRONT/BACK**: front e back nao compartilham o mesmo conjunto de actions. Apenas `OPEN_RESOURCE` e `NONE` coincidem. Front nao sabe renderizar `SHOW_EXPLANATION`, `START_STUDY_PLAN`, `START_INTERVIEW`. Back nunca retorna `SHOW_QUIZ` ou `SEARCH`.
 
 ## Chaves de storage (browser)
 
-- `study-helper:planner-context` — contexto do Interact para Study Planner (sessionStorage)
-- `study-helper:study-planner:generated-plan` — plano gerado salvo
-- `study-helper:study-plan:{plan.id}:progress` — progresso por plano
+Em uso:
+- `study-helper:study-planner:draft` — rascunho do formulario (localStorage)
+- `study-helper:study-planner:generated-plan` — plano gerado salvo (localStorage)
+- `study-helper:study-plan:{plan.id}:progress` — progresso por plano (localStorage)
+- `study-helper:study-plan:grc-30-day:progress` — progresso do plano GRC 30 dias (default)
+
+NAO existem (Sprint 27-28):
+- `study-helper:planner-context` — contexto Interact → Planner (sessionStorage)
 - `study-helper:interact-history` — historico de interacoes (max 20)
 
-Fontes: `docs/38_API_INTERACT_SPEECH_TO_TEXT.md`, `docs/46_STUDY_PLANNER_SYSTEM.md`, `docs/Rascunho_sprints.md`
+Fontes: `docs/38_API_INTERACT_SPEECH_TO_TEXT.md`, `docs/46_STUDY_PLANNER_SYSTEM.md`, `docs/Rascunho_sprints.md`, leitura direta de `apps/web/src/types/interact.ts` e `services/study-helper-api/src/main/java/com/studyhelper/api/domain/Intent.java` + `ActionType.java`

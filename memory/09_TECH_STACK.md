@@ -27,12 +27,14 @@ Status: em manutencao, sem novas features. Substituir gradualmente por Java (ADR
 
 | Camada | Escolha | ADR |
 |--------|---------|-----|
-| Linguagem | Java 21 LTS | ADR-0002 |
-| Framework | Spring Boot 3.x | ADR-0002 |
-| ORM | Spring Data JPA | - |
-| Migrations | Flyway (TUDO — confirmar) | - |
+| Linguagem | Java 17 (NÃO 21 — `pom.xml` diz 17) | ADR-0002 |
+| Framework | Spring Boot 3.3.4 | ADR-0002 |
+| ORM | nenhum (servico in-memory, sem JPA) | - |
+| Migrations | nenhum (sem DB) | - |
 | Servico principal | `services/study-helper-api/` | - |
-| Servico final bootcamp | `services/api-interact/` (planejado) | - |
+| Servico final bootcamp | `services/api-interact/` (planejado, ainda nao existe) | - |
+
+Deps atuais do pom.xml: spring-boot-starter-web, spring-boot-starter-validation, spring-boot-starter-test. Sem Lombok, sem JPA, sem Flyway, sem Postgres.
 
 ## Banco
 
@@ -79,10 +81,9 @@ study-helper/
 
 ## Pendencias
 
-- Confirmar versao exata do Java no `pom.xml` (TUDO)
-- Confirmar uso de Lombok (TUDO)
-- Confirmar uso de Flyway vs Liquibase (TUDO)
 - Definir host de producao do servico Java (nao sera Vercel)
 - Definir provedor de STT real (alem do Web Speech API) para a API Interact
+- Decidir se adiciona JPA + Postgres ou mantem in-memory
+- Decidir se migra de Java 17 para 21 LTS
 
 Fontes: `docs/16_ROADMAP.md`, `README.md`, ADR-0001, ADR-0002

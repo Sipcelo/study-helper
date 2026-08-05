@@ -20,15 +20,16 @@ Este diretorio e o cerebro em nuvem do projeto. Documenta preferencias, regras, 
 
 ## Arquivos de licoes de sprint
 
-A cada conclusao de sprint, criar `sprint_NN_lesson.md` (na raiz de memory/) com:
-
-- o que foi feito
-- desafio
-- erros
-- decisoes tomadas
-- aprendizados
-
-Indice consolidado em `11_SPRINT_LESSONS.md`.
+| Arquivo | Sprint | Status |
+|----------|--------|--------|
+| `sprint_25_lesson.md` | Sprint 25 | Registrada |
+| `sprint_26_lesson.md` | Sprint 26 | Registrada |
+| `sprint_27_lesson.md` | Sprint 27 | Registrada |
+| `sprint_28_lesson.md` | Sprint 28 | Registrada |
+| `sprint_29_lesson.md` | Sprint 29 | Registrada |
+| `sprint_30_lesson.md` | Sprint 30 | Registrada |
+| `sprint_31_lesson.md` | Sprint 31 | Registrada |
+| `sprint_25_1_lesson.md` | Sprint 25.1 — Recuperação Executável e Alinhamento Interact | CONCLUIDA |
 
 ## Como evoluir
 
@@ -40,8 +41,9 @@ Indice consolidado em `11_SPRINT_LESSONS.md`.
 ## Fontes consumidas (estado atual)
 
 - `docs/02_CREATOR_CONTEXT.md` — presente
-- `docs/16_ROADMAP.md` — presente
+- `docs/16_ROADMAP.md` — presente (precisa atualizar sessoes concluidas)
 - `docs/23_DECISION_LOG.md` — presente
+- `docs/61_ROADMAP_CHECKLIST.md` — presente (checklist auditado 03/06)
 - `docs/Rascunho_sprints.md` — presente (drafts 25-31)
 
 ## Fontes ausentes (a recriar)

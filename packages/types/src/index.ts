@@ -34,6 +34,7 @@ export interface VisualTheme {
   primaryColor: string;
   icon?: string;
   modelType: ModelType;
+  buildingType: BuildingType;
 }
 
 export interface Asset {

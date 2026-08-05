@@ -14,15 +14,27 @@ interface StudyPlanPreviewProps {
   data: StudyPlanFormData;
   onGeneratePlan: () => void;
   canGenerate: boolean;
+  source?: 'interact' | 'direct';
 }
 
-export function StudyPlanPreview({ data, onGeneratePlan, canGenerate }: StudyPlanPreviewProps) {
+export function StudyPlanPreview({
+  data,
+  onGeneratePlan,
+  canGenerate,
+  source = 'direct',
+}: StudyPlanPreviewProps) {
   const result = generateStudyPlanPreview(data);
   const { weeklyStructure, estimatedTotalHours, intensityLevel, intensityLabel, recommendedPace,
     suggestedArtifacts, suggestedFinalOutcome, warnings } = result;
 
   return (
     <div className="space-y-5">
+      {source === 'interact' && (
+        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-800/50 bg-emerald-950/20 px-3 py-1 text-xs font-medium text-emerald-400">
+          Origem Interact
+        </div>
+      )}
+
       {/* Warnings */}
       {warnings.length > 0 && (
         <div className="space-y-1.5">

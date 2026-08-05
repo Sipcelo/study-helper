@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import type { Asset } from '@/features/market/types';
 import { formatChangePercent, formatPrice, getTrendColor } from '@/features/market/market-utils';
 import { TREND_LABELS, RISK_LABELS } from '@study-helper/config';

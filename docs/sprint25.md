@@ -2,38 +2,62 @@
 
 ## Status
 
-**PARCIAL** — front-end nao recebeu o hook de voz; back-end nao precisou de mudanca (correto).
+**CONCLUIDA**
 
-## Estado inicial esperado
+## Fonte da verdade
 
-- `apps/web/src/hooks/use-web-speech.ts` — hook de captura de voz via Web Speech API
-- `apps/web/src/components/interact/interact-panel.tsx` — receber transcricao do hook
-- `services/study-helper-api/src/main/java/com/studyhelper/api/config/WebConfig.java` — adicionar `http://localhost:8888` ao CORS
-- `docs/sprint25.md` — esta memoria
+Codigo validado no estado atual do projeto (03/06/2026).
 
-## O que foi feito
+## Entregas confirmadas
 
-- Back-end nao foi alterado (correto: voz fica no browser, sem endpoint de audio)
-- `interact-panel.tsx` mantido com input apenas de texto (96 linhas)
-- CORS: back-end permite apenas `http://localhost:3000` e `http://localhost:3001`. **Falta `http://localhost:8888`** (que e a porta esperada de dev segundo o Rascunho_sprints.md e a validacao manual do sprint26.md remoto)
+1. **Hook de voz** — `apps/web/src/hooks/use-web-speech.ts` (123 linhas):
+   - Encapsula `window.SpeechRecognition || window.webkitSpeechRecognition`
+   - Tipos inline para evitar dependencia de `@types/webrtc`
+   - Idioma fixo pt-BR
+   - Estados: transcript, isListening, isSupported, error
+   - Funcoes: startListening, stopListening
+   - Cleanup no unmount (aborta reconhecimento pendente)
 
-## O que nao foi feito
+2. **Painel Interact com microfone** — `apps/web/src/components/interact/interact-panel.tsx` (181 linhas):
+   - Botao de microfone com icone SVG (absolute, canto inferior direito do textarea)
+   - Estado de gravacao: botao vermelho pulsante quando ouvindo
+   - Transcricao automatica preenche o textarea
+   - Auto-submit apos transcricao chegar
+   - Fallback: navegador sem suporte exibe aviso textual
+   - loading desabilita microfone e botao de submit
 
-- `apps/web/src/hooks/use-web-speech.ts` NAO existe no codigo recuperado
-- O input do Interact continua sendo apenas `<textarea>` (sem botao de microfone, sem transcricao)
-- CORS nao foi atualizado para incluir `localhost:8888`
+3. **CORS localhost:8888** — `WebConfig.java` ja incluia (pre-existente da sprint 25.1)
 
-## Risco
+## Cleanup tecnico
 
-- Se o dev rodar `next dev` na porta 8888 (como documentado no sprint26 remoto), o navegador vai bloquear a chamada `POST /api/interact/text` por CORS
-- O fluxo "voz → transcricao → backend → resposta" nao existe ainda
+- `textareaRef` removido — era declarado mas nunca lido (.current nunca acessado)
+- `eslint-disable react-hooks/exhaustive-deps` removido — `handleVoiceSubmit` convertido para `useCallback([domain])` e adicionado as dependencias
+- `prevTranscriptRef` mantido como guard para evitar submit duplicado
+- Auto-submit preservado
 
-## Correcoes necessarias para concluir a sprint
+## Arquivos principais
 
-1. Criar `apps/web/src/hooks/use-web-speech.ts` que encapsula `window.SpeechRecognition || window.webkitSpeechRecognition`
-2. Atualizar `interact-panel.tsx` para usar o hook (botao de microfone, preenchimento do textarea)
-3. Atualizar `WebConfig.java` para adicionar `http://localhost:8888` aos `allowedOrigins`
+| Arquivo | Funcao |
+|---------|--------|
+| `apps/web/src/hooks/use-web-speech.ts` | Hook de captura de voz via Web Speech API |
+| `apps/web/src/components/interact/interact-panel.tsx` | Painel com microfone, transcricao e auto-submit |
+| `services/study-helper-api/.../config/WebConfig.java` | CORS com localhost:3000, 3001, 8888 |
 
-## Licao
+## Validacoes
 
-Ver `memory/sprint_25_lesson.md`.
+| Validacao | Resultado |
+|-----------|-----------|
+| `npx tsc --noEmit` em `apps/web` | 0 erros |
+| Hook sem dependencias externas | OK — zero deps |
+| Fluxo de voz (hook → painel → API) | Preservado |
+| Submit manual (textarea + botao) | Preservado |
+| Navegadores suportados | Chrome, Edge (nativo), Safari iOS 14.5+ (parcial), Firefox (requer flag) |
+
+## Observacoes tecnicas
+
+- A sprint 25 nao cria endpoint de audio. Voz fica no browser, so texto vai pro backend.
+- `docs/61_SPEECH_TO_TEXT_WEB.md` documenta a implementacao em detalhe.
+
+## Proximo passo
+
+Sprint 26 — Interact Actions UX (alinhar renderizacao de actions no front com as actions que o backend retorna).

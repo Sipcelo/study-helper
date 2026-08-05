@@ -1,7 +1,7 @@
 import type { InteractTextRequest, InteractTextResponse } from '@/types/interact';
 
 const BASE_URL =
-  process.env.NEXT_PUBLIC_STUDY_HELPER_API_URL ?? 'http://localhost:8080';
+  process.env.NEXT_PUBLIC_STUDY_HELPER_API_URL ?? 'http://localhost:8081';
 
 export async function interactText(
   input: string,

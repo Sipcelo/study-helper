@@ -2,61 +2,66 @@
 
 ## Status
 
-**PARCIAL com divergencia** — o `interact-result-card.tsx` existe e renderiza a action retornada, mas ha mismatch entre as actions que o front sabe renderizar e as que o back retorna.
+**CONCLUIDA** — revalidada e ajustada contra codigo real (03/06/2026).
 
-## Estado divergente
+## Fonte da verdade
 
-**Codigo local (recuperado):**
+Codigo validado no estado atual do projeto.
 
-- `apps/web/src/components/interact/interact-result-card.tsx` (81 linhas) — renderiza botao/label para action vinda do back. Rendeiza link para `OPEN_RESOURCE`. Para outras actions, mostra apenas o nome.
-- `apps/web/src/types/interact.ts`:
-  ```ts
-  export type InteractActionType = 'OPEN_RESOURCE' | 'SHOW_QUIZ' | 'SEARCH' | 'NONE';
-  ```
+## Objetivo
 
-- `services/study-helper-api/src/main/java/com/studyhelper/api/domain/ActionType.java`:
-  ```java
-  public enum ActionType {
-      OPEN_RESOURCE,
-      SHOW_EXPLANATION,
-      START_STUDY_PLAN,
-      START_INTERVIEW,
-      NONE
-  }
-  ```
+Renderizar actions do Interact como botoes/links contextuais, alinhadas ao backend `ActionType.java`.
 
-- `services/study-helper-api/src/main/java/com/studyhelper/api/service/InteractActionResolverService.java` resolve intents em actions e targets:
-  - `GENERATE_STUDY_PLAN` → `START_STUDY_PLAN` → `/planejar-estudos`
-  - `SIMULATE_INTERVIEW` → `START_INTERVIEW` → `/programacao/entrevista-java-junior`
-  - `COMPARE_CONCEPTS` → `OPEN_RESOURCE` → `/ativos` (finance) ou `/programacao`
-  - `EXPLAIN_CONCEPT`, `REVIEW_ANSWER` → `SHOW_EXPLANATION`
-  - outros → `OPEN_RESOURCE`
+## Actions suportadas
 
-**Codigo documentado no remoto (sprint26.md, ac3e02b):**
+| Action | Renderizacao | Comportamento |
+|--------|-------------|---------------|
+| `SHOW_EXPLANATION` | Link "Abrir explicacao" (azul) se target existir; div com texto da resposta se nao | Link para `action.target` |
+| `START_STUDY_PLAN` | Link "Iniciar plano de estudos" (verde) | `action.target \|\| '/planejar-estudos'` |
+| `START_INTERVIEW` | Link "Iniciar entrevista" (âmbar) | `action.target \|\| '/interact'` |
+| `OPEN_RESOURCE` | Link "Abrir recurso" (violeta) com target visivel | Link para `action.target` |
+| `NONE` | Nao renderiza bloco de acao | — |
+| Unknown | Div "Acao nao reconhecida" (cinza, borda sutil) | Nao navega, nao quebra UI |
 
-O arquivo `sprint26.md` no `origin/main` documenta a Sprint 26 como concluida, com validacao manual no Chrome em `http://localhost:8888/interact`. As actions validadas foram:
+## Arquivos principais
 
-- `SHOW_EXPLANATION` → botao "Abrir explicacao" → link para `/programacao/rest-api`
-- `START_STUDY_PLAN` → botao "Planejar estudos" → link para `/planejar-estudos`
-- `START_INTERVIEW` → botao "Iniciar simulacao" → link para `/programacao/entrevista-java-junior`
-- `OPEN_RESOURCE` → link para `/programacao`
-- Fallback para action desconhecida (testado com `FUTURE_ACTION`)
+| Arquivo | Funcao |
+|---------|--------|
+| `apps/web/src/types/interact.ts` | `InteractActionType` com 5 valores alinhados ao backend |
+| `apps/web/src/components/interact/interact-result-card.tsx` | Renderizacao de intents (7) e actions (5) com labels, cores e CTAs |
+| `services/study-helper-api/.../domain/ActionType.java` | Enum backend: OPEN_RESOURCE, SHOW_EXPLANATION, START_STUDY_PLAN, START_INTERVIEW, NONE |
+| `services/study-helper-api/.../service/InteractActionResolverService.java` | Mapeamento Intent → ActionType + target URL |
 
-**Divergencia:**
+## Mapeamento backend (InteractActionResolverService)
 
-O codigo local NAO renderiza `SHOW_EXPLANATION`, `START_STUDY_PLAN`, `START_INTERVIEW` como botoes. Ele renderiza apenas `OPEN_RESOURCE` como link; as outras sao mostradas como texto. A implementacao documentada no remoto e mais avancada do que o codigo local recuperado.
+| Intent | Action | Target |
+|--------|--------|--------|
+| `EXPLAIN_CONCEPT` | `SHOW_EXPLANATION` | Catalog match ou fallback de dominio |
+| `GENERATE_STUDY_PLAN` | `START_STUDY_PLAN` | `/planejar-estudos` |
+| `SIMULATE_INTERVIEW` | `START_INTERVIEW` | `/programacao/entrevista-java-junior` |
+| `REVIEW_ANSWER` | `SHOW_EXPLANATION` | Catalog match ou fallback |
+| `OPEN_RESOURCE` | `OPEN_RESOURCE` | Catalog match |
+| `COMPARE_CONCEPTS` | `OPEN_RESOURCE` | `/ativos` (finance) ou `/programacao` |
+| `UNKNOWN` | `NONE` | null |
 
-## O que provavelmente aconteceu
+## Validacoes
 
-O commit de recuperacao (d056d71) capturou o codigo em um estado anterior a implementacao completa do Sprint 26. A documentacao no remoto (ac3e02b) reflete o estado mais avancado, mas o codigo ficou para tras.
+| Validacao | Resultado |
+|-----------|-----------|
+| `npx tsc --noEmit` em `apps/web` | 0 erros |
+| Tipos frontend vs backend | 5 actions alinhadas |
+| SHOW_EXPLANATION com target | Link clicavel |
+| SHOW_EXPLANATION sem target | Div textual com `result.answer` |
+| Action desconhecida | Fallback seguro, sem quebra |
+| Preservacao Sprint 25 (voz, auto-submit) | Nao alterado |
 
-## Correcoes necessarias para concluir a sprint
+## Observacoes tecnicas
 
-1. Atualizar `InteractActionType` em `types/interact.ts` para incluir `SHOW_EXPLANATION | START_STUDY_PLAN | START_INTERVIEW`
-2. Atualizar `interact-result-card.tsx` para renderizar labels e links/botoes para essas actions
-3. Garantir CORS para `localhost:8888` (ver Sprint 25)
-4. Adicionar fallback explicito para action desconhecida (mostrar "Acao nao reconhecida" sem quebrar UI)
+- O front ja estava funcional para todas as 5 actions desde a sprint 25.1 (alinhamento de tipos).
+- SHOW_EXPLANATION foi ajustado: com target vira link azul "Abrir explicacao"; sem target exibe o texto da resposta.
+- Fallback generico adicionado: qualquer action type nao listada nas 4 conhecidas exibe "Acao nao reconhecida" sem navegar.
+- Nenhuma alteracao no backend foi necessaria.
 
-## Licao
+## Proximo passo
 
-Ver `memory/sprint_26_lesson.md`.
+Sprint 27 — Interact History (historico local em localStorage) — so comecar apos validacao da Sprint 26.

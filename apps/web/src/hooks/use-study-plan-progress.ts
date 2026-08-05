@@ -16,6 +16,13 @@ export interface ProgressStats {
   percentArtifacts: number;
   percentDays: number;
   percentOverall: number;
+  isComplete: boolean;
+  nextPendingStep: {
+    kind: 'task' | 'artifact';
+    dayNumber: number;
+    dayTitle: string;
+    title: string;
+  } | null;
 }
 
 interface StoredProgress {
@@ -118,6 +125,36 @@ export function useStudyPlanProgress(plan: StudyPlan, progressKey: string = GRC_
     const percentArtifacts = pct(completedArtifactsCount, totalArtifacts);
     const percentDays = pct(completedDays, totalDays);
     const percentOverall = Math.round((percentTasks + percentArtifacts + percentDays) / 3);
+    const isComplete =
+      totalTasks > 0 &&
+      completedTasks === totalTasks &&
+      completedArtifactsCount === totalArtifacts;
+
+    const nextPendingDay = allDays.find((day) => {
+      const hasPendingTask = day.tasks.some((task) => !completedTaskIds.has(task.id));
+      const hasPendingArtifact =
+        Boolean(day.artifact) && !completedArtifactIds.has(`artifact-day-${day.dayNumber}`);
+      return hasPendingTask || hasPendingArtifact;
+    });
+
+    const nextPendingTask = nextPendingDay?.tasks.find((task) => !completedTaskIds.has(task.id));
+    const nextPendingStep = nextPendingDay
+      ? nextPendingTask
+        ? {
+          kind: 'task' as const,
+          dayNumber: nextPendingDay.dayNumber,
+          dayTitle: nextPendingDay.title,
+          title: nextPendingTask.title,
+        }
+        : nextPendingDay.artifact
+          ? {
+            kind: 'artifact' as const,
+            dayNumber: nextPendingDay.dayNumber,
+            dayTitle: nextPendingDay.title,
+            title: nextPendingDay.artifact.title,
+          }
+          : null
+      : null;
 
     return {
       totalTasks,
@@ -130,6 +167,8 @@ export function useStudyPlanProgress(plan: StudyPlan, progressKey: string = GRC_
       percentArtifacts,
       percentDays,
       percentOverall,
+      isComplete,
+      nextPendingStep,
     };
   }, [plan, completedTaskIds, completedArtifactIds]);
 

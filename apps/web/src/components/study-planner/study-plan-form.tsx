@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import type { StudyPlanFormData } from '@/types/study-plan';
 import { useStudyPlanDraft } from '@/hooks/use-study-plan-draft';
 import { generateMockStudyPlan } from '@/lib/study-planner/generate-mock-study-plan';
-import { saveGeneratedPlan } from '@/hooks/use-generated-study-plan';
+import { hasGeneratedPlan, saveGeneratedPlan } from '@/hooks/use-generated-study-plan';
 import { StudyPlanPreview } from './study-plan-preview';
 
 const AREAS = [
@@ -48,8 +48,15 @@ function isFormValid(data: StudyPlanFormData): boolean {
 
 export function StudyPlanForm() {
   const router = useRouter();
-  const { draft, updateDraft, resetDraft, hasDraft, isLoaded, loadedFromStorage } =
-    useStudyPlanDraft();
+  const {
+    draft,
+    updateDraft,
+    resetDraft,
+    hasDraft,
+    isLoaded,
+    loadedFromStorage,
+    loadedFromPlannerContext,
+  } = useStudyPlanDraft();
 
   function update<K extends keyof StudyPlanFormData>(key: K, value: StudyPlanFormData[K]) {
     updateDraft(key, value);
@@ -63,6 +70,14 @@ export function StudyPlanForm() {
 
   function handleGeneratePlan() {
     if (!isFormValid(draft)) return;
+    if (
+      hasGeneratedPlan() &&
+      !window.confirm(
+        'Ja existe um plano salvo neste navegador. Substituir pelo novo plano? Se voce cancelar, o plano atual sera mantido.',
+      )
+    ) {
+      return;
+    }
     const plan = generateMockStudyPlan(draft);
     saveGeneratedPlan(plan);
     router.push('/meu-plano/gerado');
@@ -87,6 +102,11 @@ export function StudyPlanForm() {
             {loadedFromStorage && (
               <span className="text-xs text-slate-500 italic">
                 Continuamos de onde você parou.
+              </span>
+            )}
+            {loadedFromPlannerContext && (
+              <span className="text-xs px-2 py-1 rounded-full border border-emerald-800/50 bg-emerald-950/20 text-emerald-400">
+                Origem Interact
               </span>
             )}
           </div>
@@ -254,6 +274,7 @@ export function StudyPlanForm() {
                 data={draft}
                 onGeneratePlan={handleGeneratePlan}
                 canGenerate={previewReady}
+                source={loadedFromPlannerContext ? 'interact' : 'direct'}
               />
             </div>
           ) : (

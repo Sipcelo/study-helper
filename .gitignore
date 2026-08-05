@@ -1,0 +1,21 @@
+node_modules
+
+# build
+.next/
+out/
+dist/
+target/
+*.tsbuildinfo
+
+# env local
+.env.local
+.env.*.local
+
+# logs
+*.log
+
+# arquivos temporarios
+*.zip
+
+# repo externo de skills
+agent-skills/

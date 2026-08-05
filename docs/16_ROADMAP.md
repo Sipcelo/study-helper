@@ -28,7 +28,7 @@ Entregas:
 
 ## Fase 1 — MVP visual financeiro (modulo 1)
 
-Status: **em andamento**
+Status: **~95% concluida** (ver docs/61_ROADMAP_CHECKLIST.md para detalhes)
 
 Objetivo: validar conceito visual com dados mockados.
 
@@ -194,4 +194,26 @@ Nao implementar antes do MVP de pelo menos dois modulos estar maduro e a API Int
 | Sprint 8 | Indices e indicadores | Concluida |
 | Sprint 9 | Reposicionamento estrategico (documentacao) | Concluida |
 | Sprint 10 | Plano do modulo de programacao (documentacao) | Concluida |
-| Sprint 11 | Implementacao: paginas estaticas /programacao | Proximo |
+| Sprint 11 | Implementacao: paginas estaticas /programacao | Concluida |
+| Sprint 12 | Java Essencial — 12 aulas com conteudo real | Concluida (ver docs/45) |
+| Sprint 13 | Study Planner — sistema, exemplo GRC, workspace generation | Concluida (ver docs/46-48) |
+| Sprint 14 | Study Planner UI — interface do planejador | Concluida (ver docs/49) |
+| Sprint 15 | Progresso localStorage — persistencia local | Concluida (ver docs/50) |
+| Sprint 16+17 | Formulario de plano + preview inteligente | Concluida (ver docs/51-52) |
+| Sprint 18-20 | Documentacao nao encontrada (procurar em docs/53-55 e sprint*.md) | **A investigar** |
+| Sprint 21 | Java Backend Base — Spring Boot 3.3.4 + API Interact | Concluida (ver docs/56) |
+| Sprint 22 | Frontend ↔ API Interact — integracao | Concluida (ver docs/57) |
+| Sprint 23 | Interact Intent Router — classificador de intencao | Concluida (ver docs/58) |
+| Sprint 24 | Interact Resource Resolver — catalogo de recursos | Concluida (ver docs/59) |
+| Sprint 25 | Voz no Interact — Web Speech API (PARCIAL) | Parcial (ver sprint25.md) |
+| Sprint 26 | Interact Actions UX — alinhamento front/back | Parcial (ver sprint26.md) |
+| Sprint 27 | Interact History — historico (NAO FEITA) | Nao feita |
+| Sprint 28 | Study Planner + Interact (NAO FEITA) | Nao feita |
+| Sprint 29 | Study Planner Preview UX | Parcial (ver sprint29.md) |
+| Sprint 30 | Study Planner Save/Continue UX | Concluida (ver sprint30.md) |
+| Sprint 31 | Study Planner Progress UX | Parcial (ver sprint31.md) |
+| Sprint 25.1 | Recuperacao executavel e alinhamento de contrato | Concluida |
+
+> Nota: As sprints 1-10 cobrem o modulo financeiro e estao
+> documentadas em docs/28 a docs/36.
+> docs/61_ROADMAP_CHECKLIST.md tem o checklist completo por fase.

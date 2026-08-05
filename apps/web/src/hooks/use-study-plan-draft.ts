@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import type { StudyPlanFormData } from '@/types/study-plan';
+import { loadPlannerContext, clearPlannerContext, domainToArea, extractObjective } from '@/lib/study-planner-context';
 
 const DRAFT_KEY = 'study-helper:study-planner:draft';
 
@@ -20,23 +21,45 @@ export function useStudyPlanDraft() {
   const [draft, setDraft] = useState<StudyPlanFormData>(INITIAL_FORM);
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadedFromStorage, setLoadedFromStorage] = useState(false);
+  const [loadedFromPlannerContext, setLoadedFromPlannerContext] = useState(false);
 
-  // Load on mount
+  // Load on mount — checks localStorage draft first, then Interact context
   useEffect(() => {
+    let merged: StudyPlanFormData = { ...INITIAL_FORM };
+    let hasContent = false;
+
+    // 1. Try loading from localStorage draft
     try {
       const raw = localStorage.getItem(DRAFT_KEY);
       if (raw) {
         const parsed: Partial<StudyPlanFormData> = JSON.parse(raw);
-        const merged: StudyPlanFormData = { ...INITIAL_FORM, ...parsed };
-        const hasContent = merged.area !== '' || merged.objective.trim().length > 0;
-        if (hasContent) {
-          setDraft(merged);
-          setLoadedFromStorage(true);
-        }
+        merged = { ...merged, ...parsed };
+        hasContent = merged.area !== '' || merged.objective.trim().length > 0;
       }
     } catch {
       // ignore corrupt storage
     }
+
+    // 2. Try loading from Interact context (sessionStorage) — overrides draft
+    const ctx = loadPlannerContext();
+    if (ctx) {
+      merged.area = domainToArea(ctx.domain) as StudyPlanFormData['area'];
+      merged.objective = extractObjective(ctx.input);
+      // Preencher topics com o objetivo completo para referencia
+      if (!merged.topics) {
+        merged.topics = ctx.input;
+      }
+      hasContent = true;
+      setLoadedFromPlannerContext(true);
+      // Consumiu o contexto — limpar para nao re-aplicar em proximos loads
+      clearPlannerContext();
+    }
+
+    if (hasContent) {
+      setDraft(merged);
+      setLoadedFromStorage(true);
+    }
+
     setIsLoaded(true);
   }, []);
 
@@ -60,6 +83,7 @@ export function useStudyPlanDraft() {
   const resetDraft = useCallback(() => {
     setDraft(INITIAL_FORM);
     setLoadedFromStorage(false);
+    setLoadedFromPlannerContext(false);
     try {
       localStorage.removeItem(DRAFT_KEY);
     } catch {
@@ -69,5 +93,13 @@ export function useStudyPlanDraft() {
 
   const hasDraft = isLoaded && (draft.area !== '' || draft.objective.trim().length > 0);
 
-  return { draft, updateDraft, resetDraft, hasDraft, isLoaded, loadedFromStorage };
+  return {
+    draft,
+    updateDraft,
+    resetDraft,
+    hasDraft,
+    isLoaded,
+    loadedFromStorage,
+    loadedFromPlannerContext,
+  };
 }

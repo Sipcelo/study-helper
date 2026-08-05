@@ -1,5 +1,108 @@
 # Recovery Audit — Sprints 25 a 31
 
+## Atualizacao de auditoria — Sprints 25, 26, 27 e 28 revalidadas (03/06/2026)
+
+### Sprint 25 — Voz no Interact
+
+**Status:** CONCLUIDA.
+
+Os diagnosticos originais abaixo apontavam Sprint 25 como "PARCIAL (sem hook, sem CORS 8888)".
+Esses diagnosticos estao **OBSOLETOS** — o hook `use-web-speech.ts` existe,
+o painel tem microfone e auto-submit, e o CORS inclui `localhost:8888`.
+
+Para o estado atualizado: `docs/sprint25.md` (fonte oficial) e `docs/61_SPEECH_TO_TEXT_WEB.md`.
+
+### Sprint 26 — Interact Actions UX
+
+**Status:** CONCLUIDA.
+
+Os diagnosticos originais abaixo apontavam Sprint 26 como "PARCIAL com divergencia"
+(actions front/back desalinhadas). Esse diagnostico esta **OBSOLETO**:
+- `types/interact.ts` ja tem as 5 actions alinhadas com `ActionType.java`
+- `interact-result-card.tsx` renderiza todas as 5 actions como links/botoes
+- `SHOW_EXPLANATION` com target vira link "Abrir explicacao" (azul); sem target exibe texto
+- Fallback generico adicionado para action desconhecida ("Acao nao reconhecida")
+- Nenhuma alteracao no backend foi necessaria
+
+Para o estado atualizado: `docs/sprint26.md` (fonte oficial).
+
+### Sprint 27 — Interact History
+
+**Status:** CONCLUIDA — implementada e validada manualmente no browser.
+
+O diagnostico original apontava Sprint 27 como "NAO FEITA". Esse diagnostico esta
+**OBSOLETO** — os 4 arquivos esperados foram implementados:
+- `types/interact.ts` — tipo `InteractHistoryItem` adicionado
+- `hooks/use-interact-history.ts` — hook com localStorage (chave `study-helper:interact-history`), max 20 itens, addItem, clearHistory, protecao SSR
+- `components/interact/interact-history-list.tsx` — lista com reutilizar/limpar, estado vazio
+- `components/interact/interact-panel.tsx` — integracao: salva no sucesso, NAO salva em erro
+
+Para o estado atualizado: `docs/sprint27.md` (fonte oficial).
+
+### Sprint 28 — Interact → Study Planner
+
+**Status:** CONCLUIDA — implementada e validada manualmente no browser.
+
+O diagnostico original apontava Sprint 28 como "NAO FEITA". Esse diagnostico esta
+**OBSOLETO** — os 4 arquivos esperados foram implementados:
+- `lib/study-planner-context.ts` — save/load/clear em sessionStorage, mapeamento domain→area, extracao de objective
+- `components/interact/interact-panel.tsx` — salva contexto apos resposta START_STUDY_PLAN
+- `hooks/use-study-plan-draft.ts` — consome contexto no mount e preenche formulario
+
+Para o estado atualizado: `docs/sprint28.md` (fonte oficial).
+
+### Sprint 29 - Study Planner Preview UX
+
+**Status:** CONCLUIDA em 2026-06-05 apos Sprint 29.1.
+
+O diagnostico original apontava Sprint 29 como "PARCIAL" porque o preview era rico,
+mas nao podia preservar "origem Interact" ja que a Sprint 28 ainda nao existia.
+Esse motivo esta **OBSOLETO**: a Sprint 28 foi implementada e o Planner consome
+`study-helper:planner-context`.
+
+Revalidacao atual:
+- `study-plan-preview.tsx` existe e usa `generateStudyPlanPreview()`
+- preview local preservado, sem backend
+- estado vazio existe em `study-plan-form.tsx`
+- contexto Interact e consumido por `use-study-plan-draft.ts`
+- foi adicionada flag `loadedFromPlannerContext`
+- UI agora exibe badge "Origem Interact"
+- `npx tsc --noEmit` passou
+- Sprint 29.1 limpou ambiente local, removeu `.next` apos encerrar processo antigo e subiu frontend em `localhost:8888`
+- QA manual obrigatorio passou: uso direto, preview manual, fluxo Interact -> Planner, responsividade 390px, regressao Interact e historico Sprint 27
+
+Risco remanescente:
+- `pnpm build` segue como bloqueio de ambiente Windows (`.next/trace`/travamento), mas a Sprint 29 foi concluida via dev server e typecheck.
+
+Para o estado atualizado: `docs/sprint29.md` (fonte oficial).
+
+### Sprint 30 - Study Planner Save/Continue UX
+
+**Status:** CONCLUIDA em 2026-06-05 com observacoes tecnicas.
+
+O diagnostico original apontava Sprint 30 como "FEITA" porque a persistencia
+basica ja existia, mas havia lacunas de UX:
+- sem confirmacao antes de sobrescrever plano salvo
+- sem banner explicito de plano salvo
+- sem atalho direto para continuar progresso
+
+Revalidacao atual:
+- `use-generated-study-plan.ts` centraliza save/get/clear/has em `localStorage`
+- `study-plan-form.tsx` gera plano, salva e redireciona para `/meu-plano/gerado`
+- `generated-plan-shell.tsx` trata hydration, empty state e renderizacao do plano salvo
+- progresso gerado permanece isolado por `study-helper:study-plan:{plan.id}:progress`
+- foi adicionada confirmacao com `window.confirm` antes de substituir plano ativo
+- foi adicionado banner "Plano salvo neste navegador" e link "Continuar progresso" para `#progresso`
+- `npx tsc --noEmit` passou
+- QA manual final passou: estado vazio, criar plano, sobrescrita cancelar/confirmar, banner, continuar progresso, fluxo Interact -> Planner e responsividade mobile
+
+Risco remanescente:
+- `pnpm build` foi tentado com timeout curto, mas a execucao foi interrompida na sessao. Permanece o risco de ambiente Windows ja observado em `.next/trace`; QA final foi feita via `pnpm run dev:8888`.
+
+Para o estado atualizado: `docs/sprint30.md` (fonte oficial).
+
+---
+
 ## 1. Objetivo
 
 Auditar se o estado local e remoto do projeto contem as entregas das Sprints 25 a 31, identificar gaps, e propor um plano de recuperacao baseado em evidencia, nao em palpite.
